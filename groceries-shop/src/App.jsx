@@ -24,17 +24,6 @@ export default function App() {
     })
   }
 
-  function toggleProduct(id, completed) {
-    setProducts(currentProducts => {
-      return currentProducts.map(product => {
-        if (product.id === id) {
-          return { ...product, completed }
-        }
-
-        return product
-      })
-    })
-  }
 
   function deleteProduct(id) {
     setProducts(currentProducts => {
@@ -46,7 +35,7 @@ export default function App() {
     <>
       <AddProductForm onSubmit={addProduct} />
       <h1 className="header">Added Products</h1>
-      <ProductList products={products} toggleProduct={toggleProduct} deleteProduct={deleteProduct} />
+      <ProductList products={products} deleteProduct={deleteProduct} />
     </>
   )
 }

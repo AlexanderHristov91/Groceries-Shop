@@ -1,4 +1,4 @@
-export function Product({ id, title, toggleProduct, deleteProduct}) {
+export function Product({ id, title, deleteProduct}) {
     return (
         <li>
             <label>

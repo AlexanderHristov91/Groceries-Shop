@@ -1,19 +1,14 @@
-import { Product } from "./Product";
+import React from 'react'
 
-export function ProductList({ products, toggleProduct, deleteProduct }) {
-    return (
-        <ul className="list">
-      {products.length === 0 && "No products"}
-      {products.map(product => {
-        return (
-          <Product
-            {...product}
-            key={product.id}
-            toggleProduct={toggleProduct}
-            deleteProduct={deleteProduct}
-          />
-        )
-      })}
-    </ul> 
-    )
+export function ProductList({ products, deleteProduct }) {
+  return (
+    <ul className="product-list">
+      {products.map((product) => (
+        <li key={product.id}>
+          {product.title}
+          <button onClick={() => deleteProduct(product.id)}>Delete</button>
+        </li>
+      ))}
+    </ul>
+  )
 }
