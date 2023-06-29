@@ -40,15 +40,21 @@ export default function App() {
     cucumber: 1100,
     orange: 1300,
   };
+  
 
   const totalPrice = products.reduce((total, product) => {
-    const price = prices[product.title.toLowerCase()];
+    let price = prices[product.title.toLowerCase()];
+    
+  // products.filter(item => item === dealOfTheDay).length > 1;
+    if (product.title === "banana") {
+      price = price / 2;
+    }
     return total + price;
   }, 0);
-
+  
   const aws = Math.floor(totalPrice / 100);
   const c = totalPrice % 100;
-
+  
   return (
     <>
       <AddProductForm onSubmit={addProduct} />

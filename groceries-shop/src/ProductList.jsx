@@ -2,14 +2,14 @@ import React from 'react';
 
 export function ProductList({ products, deleteProduct, prices }) {
   console.log(products);
-  const includedInDeal = ['banana', 'orange', 'tomato'];
+  const includedInDeal = ['banana'];
 
   return (
     <ul className="product-list">
       {products.map((product) => {
         const { id, title } = product;
         const price = prices[title.toLowerCase()];
-        const promoMessage = includedInDeal.includes(title.toLowerCase()) ? '3 for 2 Promotion' : '';
+        const promoMessage = includedInDeal.includes(title.toLowerCase()) ? 'Half Price Promotion' : '';
 
         return (
           <li key={id}>
