@@ -1,7 +1,7 @@
 import React from 'react';
 
 export function ProductList({ products, deleteProduct, prices }) {
-  console.log(products);
+
   const includedInDeal = ['banana'];
 
   return (
