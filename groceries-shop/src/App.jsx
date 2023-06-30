@@ -1,55 +1,73 @@
-import { useEffect, useState } from 'react';
-import './index.css';
-import { ProductList } from './ProductList';
-import { AddProductForm } from './AddProductForm';
-import { v4 as uuidv4 } from 'uuid';
+import { useEffect, useState } from "react";
+import "./index.css";
+import { ProductList } from "./ProductList";
+import { AddProductForm } from "./AddProductForm";
+import { v4 as uuidv4 } from "uuid";
+
 export default function App() {
   const [products, setProducts] = useState(() => {
-    const localValue = localStorage.getItem('ITEMS');
+    const localValue = localStorage.getItem("ITEMS");
     if (localValue == null) return [];
 
     return JSON.parse(localValue);
   });
 
-  const [productCounts, setProductCounts] = useState({});
+  const fruitAndVegetableList = [
+    "apple",
+    "banana",
+    "carrot",
+    "tomato",
+    "cucumber",
+    "orange",
+  ];
 
-  const fruitAndVegetableList = ["apple", "banana", "carrot", "tomato", "cucumber", "orange"];
-  const includedIn2For3Deal = ["apple", "orange"]; // Промоция "2 за 3"
-  const includedInBuy1Get1HalfPriceDeal = ["tomato"]; // Промоция "buy 1 get 1 half price"
+  const promo3for2 = ["banana", "apple"];
+  const buy1get1halfPrice = ["tomato"];
 
   useEffect(() => {
-    
-    const updatedProductCounts = {};
-    fruitAndVegetableList.forEach((item) => {
-      updatedProductCounts[item] = products.filter(
-        (product) => product.title.toLowerCase() === item
-      ).length;
-    });
-    setProductCounts(updatedProductCounts);
-
-    
-    localStorage.setItem('ITEMS', JSON.stringify(products));
+    localStorage.setItem("ITEMS", JSON.stringify(products));
   }, [products]);
 
   function addProduct(title) {
     setProducts((currentProducts) => {
-      const updatedProducts = [
-        ...currentProducts,
-        { id: uuidv4(), title },
-      ];
-
-      return updatedProducts;
+      return [...currentProducts, { id: uuidv4(), title }];
     });
   }
 
   function deleteProduct(id) {
     setProducts((currentProducts) => {
-      const updatedProducts = currentProducts.filter((product) => product.id !== id);
+      const updatedProducts = currentProducts.filter(
+        (product) => product.id !== id,
+      );
 
       return updatedProducts;
     });
   }
-  console.log("------------", productCounts)
+  function count3for2(products, promo3for2) {
+    const counts = {};
+
+    products.forEach((product) => {
+      const title = product.title.toLowerCase();
+      if (promo3for2.includes(title)) {
+        counts[title] = (counts[title] || 0) + 1;
+      }
+    });
+
+    return counts;
+  }
+
+  function countBuy1get1halfPrice(products, buy1get1halfPrice) {
+    const counts = {};
+
+    products.forEach((product) => {
+      const title = product.title.toLowerCase();
+      if (buy1get1halfPrice.includes(title)) {
+        counts[title] = (counts[title] || 0) + 1;
+      }
+    });
+
+    return counts;
+  }
   const prices = {
     apple: 300,
     banana: 550,
@@ -59,24 +77,27 @@ export default function App() {
     orange: 1300,
   };
 
-  
+  const productCounts3for2 = count3for2(products, promo3for2);
+  const productCounts1oneHalf = countBuy1get1halfPrice(
+    products,
+    buy1get1halfPrice,
+  );
+  console.log("---", productCounts3for2);
   const totalPrice = products.reduce((total, product) => {
-    let price = prices[product.title.toLowerCase()];
+    const title = product.title.toLowerCase();
+    let price = prices[title];
 
-   
-    if (includedIn2For3Deal.includes(product.title.toLowerCase())) {
-      const count = productCounts[product.title.toLowerCase()] || 0;
-      console.log("------------", productCounts)
-      const discountCount = Math.floor(count / 3);
-      price = price * (count - discountCount);
+    if (promo3for2.includes(title) && productCounts3for2[title] === 3) {
+      price = (productCounts3for2[title] * price - price) / 3;
+      // console.log("oooooo", price);
     }
-
-    
-    // if (includedInBuy1Get1HalfPriceDeal.includes(product.title.toLowerCase())) {
-    //   const count = productCounts[product.title.toLowerCase()] || 0;
-    //   const discountCount = Math.floor(count / 2);
-    //   price = price * (count - discountCount);
-    // }
+    if (
+      buy1get1halfPrice.includes(title) &&
+      productCounts1oneHalf[title] === 2
+    ) {
+      price = (productCounts1oneHalf[title] * price - price / 2) / 2;
+      // console.log("oooooo", price);
+    }
 
     return total + price;
   }, 0);
@@ -88,8 +109,14 @@ export default function App() {
     <>
       <AddProductForm onSubmit={addProduct} />
       <h1 className="header">Added Products</h1>
-      <ProductList products={products} deleteProduct={deleteProduct} prices={prices} />
-      <p>Total Price: {aws} aws {c} c</p>
+      <ProductList
+        products={products}
+        deleteProduct={deleteProduct}
+        prices={prices}
+      />
+      <p>
+        Total Price: {aws} aws {c} c
+      </p>
     </>
   );
 }

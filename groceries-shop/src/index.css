@@ -138,3 +138,8 @@ body {
 .list li:has(input:checked) label:hover::before {
   background: hsl(200, 100%, 30%);
 }
+
+.promo {
+  color: red;
+  font-weight: bold;
+}
